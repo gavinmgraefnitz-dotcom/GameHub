@@ -1,0 +1,130 @@
+// Next.js 14 App Router project skeleton with both Code Editor (Monaco)
+// and Blocks Editor (Scratch-style via Blockly). This is a starter structure.
+// Additional files can be added in future updates.
+
+// File: package.json
+{
+  "name": "game-hub",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "@monaco-editor/react": "latest",
+    "blockly": "latest",
+    "tailwindcss": "latest"
+  }
+}
+
+// File: tailwind.config.js
+module.exports = {
+  content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
+  theme: { extend: {} },
+  plugins: []
+};
+
+// File: app/layout.js
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body className="bg-gray-900 text-white">{children}</body>
+    </html>
+  );
+}
+
+// File: app/page.js (Home Page)
+import Link from "next/link";
+export default function Home() {
+  return (
+    <main className="p-6 space-y-4">
+      <h1 className="text-4xl font-bold">Game Hub</h1>
+      <p>Create and upload games online — no downloads needed.</p>
+      <div className="space-x-4">
+        <Link href="/editor/code" className="px-4 py-2 bg-blue-600 rounded">Code Editor</Link>
+        <Link href="/editor/blocks" className="px-4 py-2 bg-green-600 rounded">Blocks Editor</Link>
+      </div>
+    </main>
+  );
+}
+
+// File: components/CodeEditor.js
+import Editor from "@monaco-editor/react";
+export default function CodeEditor({ code, setCode }) {
+  return (
+    <div className="h-[80vh] border border-gray-700 rounded">
+      <Editor
+        height="100%"
+        defaultLanguage="javascript"
+        theme="vs-dark"
+        value={code}
+        onChange={(v) => setCode(v)}
+      />
+    </div>
+  );
+}
+
+// File: components/BlocksEditor.js
+import { useEffect, useRef } from "react";
+import * as Blockly from "blockly";
+
+export default function BlocksEditor({ setCode }) {
+  const blocklyDiv = useRef(null);
+  const toolbox = {
+    "kind": "flyoutToolbox",
+    "contents": [
+      { "kind": "block", "type": "controls_if" },
+      { "kind": "block", "type": "math_number" },
+      { "kind": "block", "type": "text" },
+      { "kind": "block", "type": "logic_compare" }
+    ]
+  };
+
+  useEffect(() => {
+    const workspace = Blockly.inject(blocklyDiv.current, { toolbox });
+    workspace.addChangeListener(() => {
+      const js = Blockly.JavaScript.workspaceToCode(workspace);
+      setCode(js);
+    });
+  }, []);
+
+  return <div ref={blocklyDiv} className="w-full h-[80vh] bg-gray-800" />;
+}
+
+// File: app/editor/code/page.js
+'use client';
+import { useState } from "react";
+import CodeEditor from "../../../components/CodeEditor";
+
+export default function CodeEditorPage() {
+  const [code, setCode] = useState("console.log('Hello game hub!')");
+
+  return (
+    <main className="p-4 space-y-4">
+      <h1 className="text-2xl font-bold">Code Editor</h1>
+      <CodeEditor code={code} setCode={setCode} />
+    </main>
+  );
+}
+
+// File: app/editor/blocks/page.js
+'use client';
+import { useState } from "react";
+import BlocksEditor from "../../../components/BlocksEditor";
+
+export default function BlocksPage() {
+  const [generatedCode, setGeneratedCode] = useState("");
+
+  return (
+    <main className="p-4 space-y-4">
+      <h1 className="text-2xl font-bold">Blocks Editor</h1>
+      <BlocksEditor setCode={setGeneratedCode} />
+      <pre className="bg-black p-4 rounded mt-4">{generatedCode}</pre>
+    </main>
+  );
+}
