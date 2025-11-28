@@ -1,8 +1,4 @@
-// Next.js 14 App Router project skeleton with both Code Editor (Monaco)
-// and Blocks Editor (Scratch-style via Blockly). This is a starter structure.
-// Additional files can be added in future updates.
 
-// File: package.json
 {
   "name": "game-hub",
   "version": "1.0.0",
