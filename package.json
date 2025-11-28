@@ -20,6 +20,15 @@
     "blockly": "latest",
     "tailwindcss": "latest"
   }
+},
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "@monaco-editor/react": "latest",
+    "blockly": "latest",
+    "tailwindcss": "latest"
+  }
 }
 
 // File: tailwind.config.js
